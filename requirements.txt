@@ -1,0 +1,36 @@
+altgraph==0.17.4
+blinker==1.9.0
+branca @ file:///opt/miniconda3/conda-bld/branca_1757934667321/work
+brotlicffi @ file:///opt/miniconda3/conda-bld/brotlicffi_1761745171027/work
+certifi @ file:///opt/miniconda3/conda-bld/certifi_1759786064563/work/certifi
+cffi @ file:///opt/miniconda3/conda-bld/cffi_1761832774705/work
+charset-normalizer @ file:///opt/miniconda3/conda-bld/charset-normalizer_1761744820108/work
+click==8.3.0
+Flask==3.1.2
+folium @ file:///home/conda/feedstock_root/build_artifacts/folium_1750113804946/work
+fonttools==4.60.1
+idna @ file:///opt/miniconda3/conda-bld/idna_1761912005314/work
+itsdangerous==2.2.0
+Jinja2 @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_2cnn4kenrm/croot/jinja2_1741710859444/work
+macholib==1.16.3
+MarkupSafe @ file:///private/var/folders/nz/j6p8yfhx1mv_0grj5xl4650h0000gp/T/abs_1f_uj4vxik/croot/markupsafe_1738584045311/work
+numpy @ file:///opt/miniconda3/conda-bld/numpy_and_numpy_base_1762528496274/work/dist/numpy-2.3.4-cp311-cp311-macosx_12_0_arm64.whl#sha256=0a2b103b89c29fb13f6cfa1b0b4c69aa148f14f86d337750cd91f18b8e073925
+packaging==25.0
+pycparser @ file:///opt/miniconda3/conda-bld/pycparser_1757496044852/work
+pyinstaller==6.16.0
+pyinstaller-hooks-contrib==2025.9
+PyQt6==6.10.0
+PyQt6-Qt6==6.10.0
+PyQt6-WebEngine==6.10.0
+PyQt6-WebEngine-Qt6==6.10.0
+PyQt6_sip==13.10.2
+PySocks @ file:///opt/miniconda3/conda-bld/pysocks_1761753010242/work
+requests @ file:///opt/miniconda3/conda-bld/requests_1762359591792/work
+rubicon-objc==0.5.2
+toga==0.5.2
+toga-cocoa==0.5.2
+toga-core==0.5.2
+travertino==0.5.2
+urllib3 @ file:///private/var/folders/k1/30mswbxs7r1g6zwn8y4fyt500000gp/T/abs_95v32ztwo_/croot/urllib3_1750775480393/work
+Werkzeug==3.1.3
+xyzservices @ file:///opt/miniconda3/conda-bld/xyzservices_1758720201868/work
