@@ -1,29 +1,44 @@
+import os
+import sys
+from PyQt6.QtWidgets import QSizePolicy
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-import folium
-from folium import plugins
-import json
+from folium import Map, GeoJson
+from json import loads
+
+
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller bundles"""
+    if hasattr(sys, "_MEIPASS"):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
 
 
 class MapWidget(QWebEngineView):
     def __init__(self, parent=None):
         super().__init__(parent)
-
         self.current_coords = []
-        self.map = self.create_map()
+        with open(resource_path("country_outlines/countries.geojson")) as handle:
+            self.country_outlines = loads(handle.read())
+        # with open(resource_path("country_outlines/countries_centroids.geojson")) as handle:
+        #     self.country_centroids = loads(handle.read())
+        self.update_map("de")
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+
+    def update_map(self, country_iso):
+        self.map = self.create_map(country_iso)
         self.map.save("map.html")
         self.setHtml(self.map.get_root().render())
 
     def create_map(self, country_iso):
-        with open("country_outlines/countries.geojson") as handle:
-            country_outlines = json.loads(handle.read())
-
-        with open("country_outlines/countries_centroids.geojson") as handle:
-            country_centroids = json.loads(handle.read())
-
-        for i in country_outlines["features"]:
+        country_outline = None
+        for i in self.country_outlines["features"]:
             if i["properties"]["ISO3166-1-Alpha-2"] == country_iso.upper():
                 country_outline = i
                 break
+        if country_outline is None:
+            raise ValueError(f"Country ISO code '{country_iso}' not found in outlines.")
 
         self.current_coords = country_outline["geometry"]["coordinates"]
         if country_outline["geometry"]["type"] == "Polygon":
@@ -43,30 +58,27 @@ class MapWidget(QWebEngineView):
                 xmin, xmax = min(xmin, min(lons)), max(xmax, max(lons))
                 ymin, ymax = min(ymin, min(lats)), max(ymax, max(lats))
 
-        for i in country_centroids["features"]:
-            if i["properties"]["ISO"] == country_iso.upper():
-                country_centroid = i["geometry"]["coordinates"]
-                country_centroid.reverse()
-                break
+        # for i in self.country_centroids["features"]:
+        #     if i["properties"]["ISO"] == country_iso.upper():
+        #         country_centroid = i["geometry"]["coordinates"]
+        #         country_centroid.reverse()
+        #         break
 
-        m = folium.Map(
-            location=country_centroid,
+        m = Map(
             min_zoom=1,
             max_zoom=20,
-            crs="EPSG3857",
+            tiles="cartodb positron",
         )
 
         m.fit_bounds([[ymin, xmin], [ymax, xmax]])
-        folium.GeoJson(
+        GeoJson(
             country_outline,
             name=country_outline["properties"]["name"],
             style_function=lambda feature: {"weight": 1},
         ).add_to(m)
-        folium.LayerControl().add_to(m)
-        folium.Marker(country_centroid, popup=country_outline["properties"]["name"], icon=folium.Icon(color="red")).add_to(m)
-
-        plugins.Fullscreen().add_to(m)
-        plugins.LocateControl().add_to(m)
+        # folium.LayerControl().add_to(m)
+        # folium.Marker(country_centroid, popup=country_outline["properties"]["name"], icon=folium.Icon(color="red")).add_to(m)
+        # plugins.LocateControl().add_to(m)
 
         return m
 

@@ -1,14 +1,14 @@
+import os
 import sys
+import json
+from random import randint
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QHBoxLayout, QWidget, QPushButton, QStyleFactory
 from PyQt6.QtGui import QFont, QAction, QKeySequence
 from flag_widget import FlagWidget
-from folium_map_widget import MapWidget
-import json
+from folium_map_widget import MapWidget, resource_path
 from glob import glob
-import random
 from os.path import join
 from PyQt6.QtCore import Qt
-import os
 
 
 class CentralWidget(QWidget):
@@ -16,26 +16,37 @@ class CentralWidget(QWidget):
         super().__init__(parent)
 
         self.reveal_mode = True
-        self.flags_folder = join("country-flags-main", "png")
-        self.maps_folder = join("country_outlines", "imgs")
-        self.countries_json = join("country-flags-main", "countries.json")
+        self.flags_folder = resource_path(join("country-flags-main", "png"))
+        self.maps_folder = resource_path(join("country_outlines", "imgs"))
+        self.countries_json = resource_path(join("country-flags-main", "countries.json"))
 
         self.layout = QVBoxLayout()
         self.image_layout = QHBoxLayout()
         self.button_layout = QHBoxLayout()
         self.country_names = self.load_country_names()
         self.maps_dict = self.load_map_paths()
+        self.no_countries_label = QLabel(parent=self)
+        self.no_countries_label.setFont(QFont("Sans Serif", 30))
+        self.update_no_countries_label()
 
         ctry_img, ctry_name, ctry_idx = self.get_random_country()
         self.country_idx = ctry_idx
         self.flag_widget = FlagWidget(join(self.flags_folder, ctry_img + ".png"), ctry_name, parent=self)
-        self.map_widget = FlagWidget(self.maps_dict[ctry_img], ctry_name, parent=self)
+
+        self.map_widget = MapWidget(parent=self)
+        self.map_widget.setMinimumSize(300, 200)
+        self.map_widget.update_map(ctry_img)
+
         sp = self.map_widget.sizePolicy()
         sp.setRetainSizeWhenHidden(True)
         self.map_widget.setSizePolicy(sp)
         self.map_widget.hide()
+
         self.image_layout.addWidget(self.flag_widget)
         self.image_layout.addWidget(self.map_widget)
+
+        self.layout.addWidget(self.no_countries_label, alignment=Qt.AlignmentFlag.AlignCenter)
+
         self.layout.addLayout(self.image_layout)
         self.name_label = QLabel("?", parent=self)
         self.reveal_button = QPushButton("Reveal", parent=self)
@@ -79,7 +90,8 @@ class CentralWidget(QWidget):
         else:
             self.reveal_mode = True
             ctry_img = self.update_flag_widget()
-            self.update_map_widget(ctry_img)
+            self.map_widget.update_map(ctry_img)
+            self.update_no_countries_label()
             self.name_label.setText("?")
             self.reveal_button.setText("Reveal")
             self.map_widget.hide()
@@ -92,7 +104,7 @@ class CentralWidget(QWidget):
         self.reveal_country_name()
 
     def get_random_country(self):
-        country_idx = random.randint(0, len(self.country_names) - 1)
+        country_idx = randint(0, len(self.country_names) - 1)
         file_name, ctry_name = self.country_names[country_idx]
         self.country_idx = country_idx
         return file_name, ctry_name, country_idx
@@ -102,8 +114,8 @@ class CentralWidget(QWidget):
         self.flag_widget.set_flag_path(join(self.flags_folder, ctry_img + ".png"), ctry_name)
         return ctry_img
 
-    def update_map_widget(self, ctry_img):
-        self.map_widget.set_flag_path(self.maps_dict[ctry_img], ctry_img)
+    def update_no_countries_label(self):
+        self.no_countries_label.setText(f"Number of countries left: {len(self.country_names)}")
 
     def load_country_names(self):
         with open(self.countries_json, "r", encoding="utf-8") as f:
@@ -127,7 +139,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setGeometry(100, 100, 1000, 600)
         self.setMinimumSize(200, 200)
-        self.setWindowTitle("Flag Puzzle App")
+        self.setWindowTitle("Flag Puzzle")
 
         close_action = QAction("Close", self)
         close_action.setShortcut(QKeySequence.StandardKey.Close)

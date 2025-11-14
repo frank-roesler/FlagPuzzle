@@ -1,0 +1,6 @@
+.DS_Store
+FlagPuzzle.spec
+__pycache__/
+auxiliary/
+map.html
+flag_puzzle.code-workspace

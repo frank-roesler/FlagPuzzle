@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flag Puzzle</title>
+    <style>
+        body { 
+            font-family: sans-serif; 
+            text-align: center; 
+            margin: 0; 
+            padding: 0; 
+        }
+        h1 { margin-top: 20px; }
+        p { font-size: 4em; }
+        
+
+        #country-name {
+            font-size: 5em;  /* adjust as needed */
+            font-weight: bold;
+        }
+
+        #title {
+            font-size: 5em;  /* adjust as needed */
+            font-weight: bold;
+        }
+
+        #container { 
+            display: flex;
+            flex-direction: column;  /* vertical stack */
+            justify-content: center;
+            align-items: center;     /* center flag and map horizontally */
+            gap: 20px; 
+            margin-top: 20px;
+        }
+
+        #flag, #map {
+            width: 90%;         /* same width */
+            max-width: 800px;   /* optional max width */
+            height: auto;       /* let height scale automatically */
+            border: 1px solid #ccc;
+        }
+
+        #map iframe {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;  /* keeps map looking nice */
+        }
+
+
+        #buttons { 
+            margin-top: 20px; 
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;      /* Wrap buttons on small screens */
+        }
+
+        #buttons button {
+            font-size: 4em;     /* Larger buttons for touch */
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 800px) {
+            #flag, #map {
+                height: 250px;       /* Slightly smaller on small screens */
+            }
+            #buttons button {
+                font-size: 4em;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">Flag Puzzle</h1>
+    <p>Number of countries left: {{ remaining }}</p>
+    
+    <h2 id="country-name">{{ country_name if revealed else "?" }}</h2>
+
+    <div id="buttons">
+        {% if not revealed %}
+            <a href="{{ url_for('reveal') }}"><button>Reveal</button></a>
+        {% else %}
+            <a href="{{ url_for('next_country') }}"><button>Next</button></a>
+            <a href="{{ url_for('remove') }}"><button>Remove</button></a>
+        {% endif %}
+    </div>
+
+    <div id="container">
+        <img id="flag" src="{{ flag_path }}" alt="Flag">
+        {% if revealed %}
+        <div id="map">{{ map_html|safe }}</div>
+        {% else %}
+        <div id="map" style="display:none;"></div>
+        {% endif %}
+    </div>
+
+
+</body>
+</html>
