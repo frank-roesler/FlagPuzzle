@@ -44,10 +44,12 @@ class MapWidget(QWebEngineView):
         if country_outline["geometry"]["type"] == "Polygon":
             self.current_coords = [self.current_coords]
 
-        if country_iso.lower() in ["ru", "nz", "fj"]:
+        if country_iso.lower() in ["ru", "nz", "fj", "ki"]:
             country_outline = self.shift_russia(country_outline)
         if country_iso.lower() in "us":
             country_outline = self.shift_usa(country_outline)
+        # if country_iso.lower() in "mv":
+        country_outline = self.shift_all(country_outline)
 
         xmin = ymin = float("inf")
         xmax = ymax = float("-inf")
@@ -98,4 +100,11 @@ class MapWidget(QWebEngineView):
                     point[0] -= 340
                     point[0] = point[0] % 360
                     point[0] -= 20
+        return country_outline
+
+    def shift_all(self, country_outline):
+        for part in self.current_coords:
+            for p in part:
+                for point in p:
+                    point[0] += 2e-6
         return country_outline

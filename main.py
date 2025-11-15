@@ -17,14 +17,12 @@ class CentralWidget(QWidget):
 
         self.reveal_mode = True
         self.flags_folder = resource_path(join("country-flags-main", "png"))
-        self.maps_folder = resource_path(join("country_outlines", "imgs"))
         self.countries_json = resource_path(join("country-flags-main", "countries.json"))
 
         self.layout = QVBoxLayout()
         self.image_layout = QHBoxLayout()
         self.button_layout = QHBoxLayout()
         self.country_names = self.load_country_names()
-        self.maps_dict = self.load_map_paths()
         self.no_countries_label = QLabel(parent=self)
         self.no_countries_label.setFont(QFont("Sans Serif", 30))
         self.update_no_countries_label()
@@ -121,17 +119,6 @@ class CentralWidget(QWidget):
         with open(self.countries_json, "r", encoding="utf-8") as f:
             names_dict = json.load(f)
             return [(key.lower(), value) for key, value in names_dict.items()]
-
-    def load_map_paths(self):
-        map_paths = glob(self.maps_folder + "/*")
-        maps_dict = {}
-        for key, _ in self.country_names:
-            for path in map_paths:
-                filename = os.path.basename(path)
-                if filename.startswith(key):
-                    maps_dict[key] = path
-                    break
-        return maps_dict
 
 
 class MainWindow(QMainWindow):

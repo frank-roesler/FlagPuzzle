@@ -78,7 +78,6 @@
     "ID": "Indonesia",
     "IE": "Ireland",
     "IL": "Israel",
-    "IM": "Isle of Man",
     "IN": "India",
     "IQ": "Iraq",
     "IR": "Iran",
@@ -193,5 +192,10 @@
     "YE": "Yemen",
     "ZA": "South Africa",
     "ZM": "Zambia",
-    "ZW": "Zimbabwe"
+    "ZW": "Zimbabwe",
+    "MV": "Maldives",
+    "CK": "Cook Islands",    
+    "KI": "Kiribati",
+    "MH": "Marshall Islands",
+    "NU": "Niue"
 }
