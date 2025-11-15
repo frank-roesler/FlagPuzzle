@@ -42,7 +42,6 @@ def get_country_coords(country_iso):
                     lats = [point[1] for point in p]
                     xmin, xmax = min(xmin, min(lons)), max(xmax, max(lons))
                     ymin, ymax = min(ymin, min(lats)), max(ymax, max(lats))
-            diameter = max(abs(xmax - xmin), abs(ymax - ymin))
             return coords, (xmin, xmax, ymin, ymax)
     return []
 
